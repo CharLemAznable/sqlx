@@ -93,6 +93,8 @@ type Execer interface {
     Exec(query string, args ...interface{}) (sql.Result, error)
 }
 
+type DynamicQuery func(arg interface{}) (string, error)
+
 // Binder is an interface for something which can bind queries (Tx, DB)
 type binder interface {
     DriverName() string
@@ -332,6 +334,26 @@ func (db *DB) NamedGet(dest interface{}, query string, arg interface{}) error {
     return NamedGet(db, dest, query, arg)
 }
 
+func (db *DB) DynamicNamedQuery(dynamicQuery DynamicQuery, arg interface{}) (*Rows, error) {
+    return DynamicNamedQuery(db, dynamicQuery, arg)
+}
+
+func (db *DB) DynamicNamedQueryRow(dynamicQuery DynamicQuery, arg interface{}) (*Row, error) {
+    return DynamicNamedQueryRow(db, dynamicQuery, arg)
+}
+
+func (db *DB) DynamicNamedExec(dynamicQuery DynamicQuery, arg interface{}) (sql.Result, error) {
+    return DynamicNamedExec(db, dynamicQuery, arg)
+}
+
+func (db *DB) DynamicNamedSelect(dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
+    return DynamicNamedSelect(db, dest, dynamicQuery, arg)
+}
+
+func (db *DB) DynamicNamedGet(dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
+    return DynamicNamedGet(db, dest, dynamicQuery, arg)
+}
+
 // Select using this DB.
 // Any placeholder parameters are replaced with supplied args.
 func (db *DB) Select(dest interface{}, query string, args ...interface{}) error {
@@ -458,6 +480,26 @@ func (tx *Tx) NamedSelect(dest interface{}, query string, arg interface{}) error
 
 func (tx *Tx) NamedGet(dest interface{}, query string, arg interface{}) error {
     return NamedGet(tx, dest, query, arg)
+}
+
+func (tx *Tx) DynamicNamedQuery(dynamicQuery DynamicQuery, arg interface{}) (*Rows, error) {
+    return DynamicNamedQuery(tx, dynamicQuery, arg)
+}
+
+func (tx *Tx) DynamicNamedQueryRow(dynamicQuery DynamicQuery, arg interface{}) (*Row, error) {
+    return DynamicNamedQueryRow(tx, dynamicQuery, arg)
+}
+
+func (tx *Tx) DynamicNamedExec(dynamicQuery DynamicQuery, arg interface{}) (sql.Result, error) {
+    return DynamicNamedExec(tx, dynamicQuery, arg)
+}
+
+func (tx *Tx) DynamicNamedSelect(dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
+    return DynamicNamedSelect(tx, dest, dynamicQuery, arg)
+}
+
+func (tx *Tx) DynamicNamedGet(dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
+    return DynamicNamedGet(tx, dest, dynamicQuery, arg)
 }
 
 // Select within a transaction.

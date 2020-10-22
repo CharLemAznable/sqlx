@@ -439,3 +439,43 @@ func NamedGet(e Ext, dest interface{}, query string, arg interface{}) error {
     }
     return e.Get(dest, q, args...)
 }
+
+func DynamicNamedQuery(e Ext, dynamicQuery DynamicQuery, arg interface{}) (*Rows, error) {
+    query, err := dynamicQuery(arg)
+    if err != nil {
+        return nil, err
+    }
+    return NamedQuery(e, query, arg)
+}
+
+func DynamicNamedQueryRow(e Ext, dynamicQuery DynamicQuery, arg interface{}) (*Row, error) {
+    query, err := dynamicQuery(arg)
+    if err != nil {
+        return nil, err
+    }
+    return NamedQueryRow(e, query, arg)
+}
+
+func DynamicNamedExec(e Ext, dynamicQuery DynamicQuery, arg interface{}) (sql.Result, error) {
+    query, err := dynamicQuery(arg)
+    if err != nil {
+        return nil, err
+    }
+    return NamedExec(e, query, arg)
+}
+
+func DynamicNamedSelect(e Ext, dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
+    query, err := dynamicQuery(arg)
+    if err != nil {
+        return err
+    }
+    return NamedSelect(e, dest, query, arg)
+}
+
+func DynamicNamedGet(e Ext, dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
+    query, err := dynamicQuery(arg)
+    if err != nil {
+        return err
+    }
+    return NamedGet(e, dest, query, arg)
+}
