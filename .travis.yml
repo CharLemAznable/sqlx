@@ -1,13 +1,10 @@
-# vim: ft=yaml sw=2 ts=2
-
+dist: trusty
 language: go
-
-# enable database services
+go:
+  - 1.10.x
 services:
   - mysql
   - postgresql
-
-# create test database
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS sqlxtest;'
   - psql -c 'create database sqlxtest;' -U postgres
@@ -15,13 +12,7 @@ before_install:
   - export SQLX_MYSQL_DSN="travis:@/sqlxtest?parseTime=true"
   - export SQLX_POSTGRES_DSN="postgres://postgres:@localhost/sqlxtest?sslmode=disable"
   - export SQLX_SQLITE_DSN="$HOME/sqlxtest.db"
-
-# go versions to test
-go:
-  - "1.10.x"
-  - "1.11.x"
-  - "1.12.x"
-
-# run tests w/ coverage
 script:
-  - travis_retry $GOPATH/bin/goveralls -service=travis-ci
+  - go test -test.bench=.* -coverprofile=coverage.txt -covermode=atomic
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
