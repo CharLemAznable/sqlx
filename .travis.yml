@@ -12,6 +12,6 @@ before_install:
   - export SQLX_POSTGRES_DSN="postgres://postgres:@localhost/sqlxtest?sslmode=disable"
   - export SQLX_SQLITE_DSN="$HOME/sqlxtest.db"
 script:
-  - go test -test.bench=.* -coverprofile=coverage.txt -covermode=atomic
+  - go test -test.bench=.* -coverprofile=coverage.txt -covermode=atomic ./...
 after_success:
   - bash <(curl -s https://codecov.io/bash)
