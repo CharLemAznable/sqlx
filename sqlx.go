@@ -326,6 +326,10 @@ func (db *DB) NamedExec(query string, arg interface{}) (sql.Result, error) {
     return NamedExec(db, query, arg)
 }
 
+func (db *DB) NamedExecX(query string, arg interface{}) (int64, error) {
+    return NamedExecX(db, query, arg)
+}
+
 func (db *DB) NamedSelect(dest interface{}, query string, arg interface{}) error {
     return NamedSelect(db, dest, query, arg)
 }
@@ -344,6 +348,10 @@ func (db *DB) DynamicNamedQueryRow(dynamicQuery DynamicQuery, arg interface{}) (
 
 func (db *DB) DynamicNamedExec(dynamicQuery DynamicQuery, arg interface{}) (sql.Result, error) {
     return DynamicNamedExec(db, dynamicQuery, arg)
+}
+
+func (db *DB) DynamicNamedExecX(dynamicQuery DynamicQuery, arg interface{}) (int64, error) {
+    return DynamicNamedExecX(db, dynamicQuery, arg)
 }
 
 func (db *DB) DynamicNamedSelect(dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
@@ -365,6 +373,14 @@ func (db *DB) Select(dest interface{}, query string, args ...interface{}) error 
 // An error is returned if the result set is empty.
 func (db *DB) Get(dest interface{}, query string, args ...interface{}) error {
     return Get(db, dest, query, args...)
+}
+
+func (db *DB) ExecX(query string, args ...interface{}) (int64, error) {
+    result, err := db.Exec(query, args...)
+    if nil != err {
+        return 0, err
+    }
+    return result.RowsAffected()
 }
 
 // MustBegin starts a transaction, and panics on error.  Returns an *sqlx.Tx instead
@@ -474,6 +490,10 @@ func (tx *Tx) NamedExec(query string, arg interface{}) (sql.Result, error) {
     return NamedExec(tx, query, arg)
 }
 
+func (tx *Tx) NamedExecX(query string, arg interface{}) (int64, error) {
+    return NamedExecX(tx, query, arg)
+}
+
 func (tx *Tx) NamedSelect(dest interface{}, query string, arg interface{}) error {
     return NamedSelect(tx, dest, query, arg)
 }
@@ -492,6 +512,10 @@ func (tx *Tx) DynamicNamedQueryRow(dynamicQuery DynamicQuery, arg interface{}) (
 
 func (tx *Tx) DynamicNamedExec(dynamicQuery DynamicQuery, arg interface{}) (sql.Result, error) {
     return DynamicNamedExec(tx, dynamicQuery, arg)
+}
+
+func (tx *Tx) DynamicNamedExecX(dynamicQuery DynamicQuery, arg interface{}) (int64, error) {
+    return DynamicNamedExecX(tx, dynamicQuery, arg)
 }
 
 func (tx *Tx) DynamicNamedSelect(dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
@@ -513,6 +537,14 @@ func (tx *Tx) Select(dest interface{}, query string, args ...interface{}) error 
 // An error is returned if the result set is empty.
 func (tx *Tx) Get(dest interface{}, query string, args ...interface{}) error {
     return Get(tx, dest, query, args...)
+}
+
+func (tx *Tx) ExecX(query string, args ...interface{}) (int64, error) {
+    result, err := tx.Exec(query, args...)
+    if nil != err {
+        return 0, err
+    }
+    return result.RowsAffected()
 }
 
 // Queryx within a transaction.
@@ -644,6 +676,14 @@ func (q *qStmt) QueryRowx(query string, args ...interface{}) *Row {
 
 func (q *qStmt) Exec(query string, args ...interface{}) (sql.Result, error) {
     return q.Stmt.Exec(args...)
+}
+
+func (q *qStmt) ExecX(query string, args ...interface{}) (int64, error) {
+    result, err := q.Exec(query, args...)
+    if nil != err {
+        return 0, err
+    }
+    return result.RowsAffected()
 }
 
 func (q *qStmt) Select(dest interface{}, query string, args ...interface{}) error {

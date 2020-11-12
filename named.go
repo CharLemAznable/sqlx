@@ -424,6 +424,14 @@ func NamedExec(e Ext, query string, arg interface{}) (sql.Result, error) {
     return e.Exec(q, args...)
 }
 
+func NamedExecX(e Ext, query string, arg interface{}) (int64, error) {
+    result, err := NamedExec(e, query, arg)
+    if nil != err {
+        return 0, err
+    }
+    return result.RowsAffected()
+}
+
 func NamedSelect(e Ext, dest interface{}, query string, arg interface{}) error {
     q, args, err := bindNamedMapper(BindType(e.DriverName()), query, arg, mapperFor(e))
     if err != nil {
@@ -462,6 +470,14 @@ func DynamicNamedExec(e Ext, dynamicQuery DynamicQuery, arg interface{}) (sql.Re
         return nil, err
     }
     return NamedExec(e, query, arg)
+}
+
+func DynamicNamedExecX(e Ext, dynamicQuery DynamicQuery, arg interface{}) (int64, error) {
+    result, err := DynamicNamedExec(e, dynamicQuery, arg)
+    if nil != err {
+        return 0, err
+    }
+    return result.RowsAffected()
 }
 
 func DynamicNamedSelect(e Ext, dest interface{}, dynamicQuery DynamicQuery, arg interface{}) error {
